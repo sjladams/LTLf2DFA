@@ -175,12 +175,11 @@ def invoke_mona():
             shell=True,
             timeout=30,
             cpature_output=True,
-            encoding="utf-8",
-         )
-         return str(completed_proc.stdout).strip()
-     except:
-         TimeoutExpired:
-         return False
+            encoding="utf-8")
+        return str(completed_proc.stdout).strip()
+    except:
+        TimeoutExpired()
+        return False
 
 
 def output2dot(mona_output):
