@@ -174,11 +174,14 @@ def invoke_mona():
             command,
             shell=True,
             timeout=30,
-            cpature_output=True,
+            capture_output=True,  # Fixed typo here
             encoding="utf-8")
         return str(completed_proc.stdout).strip()
-    except:
-        TimeoutExpired()
+    except subprocess.TimeoutExpired:  # Correctly catching the TimeoutExpired exception
+        print("The command timed out.")  # Optionally log the timeout
+        return False
+    except Exception as e:  # Optionally catch other exceptions
+        print(f"An error occurred: {e}")
         return False
 
 
