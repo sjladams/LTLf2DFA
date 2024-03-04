@@ -23,7 +23,8 @@ import itertools as it
 import os
 import re
 import signal
-from subprocess import PIPE, Popen, TimeoutExpired  # nosec B404
+# from subprocess import PIPE, Popen, TimeoutExpired  # nosec B404
+import subprocess
 
 from sympy import And, Not, Or, simplify, symbols
 
@@ -168,20 +169,18 @@ def createMonafile(p: str):
 def invoke_mona():
     """Execute the MONA tool."""
     command = f"mona -q -u -w {PACKAGE_DIR}/automa.mona"
-    process = Popen(
-        args=command,
-        stdout=PIPE,
-        stderr=PIPE,
-        preexec_fn=os.setsid,
-        shell=True,
-        encoding="utf-8",
-    )
     try:
-        output, _ = process.communicate(timeout=30)
-        return str(output).strip()
-    except TimeoutExpired:
-        os.killpg(os.getpgid(process.pid), signal.SIGTERM)
-        return False
+        completed_proc = subprocess.run(
+            command,
+            shell=True,
+            timeout=30,
+            cpature_output=True,
+            encoding="utf-8",
+         )
+         return str(completed_proc.stdout).strip()
+     except:
+         TimeoutExpired:
+         return False
 
 
 def output2dot(mona_output):
